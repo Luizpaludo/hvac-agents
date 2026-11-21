@@ -1,0 +1,14 @@
+# Core (agents, tools, models)
+numpy==2.4.6
+pandas>=2.2
+scikit-learn>=1.5
+langgraph>=0.2
+anthropic>=0.40
+# RAG library (same versions as Cesar's RAG notebook, Part 12)
+sentence-transformers==5.7.0
+pypdf==7.1.1
+# PostgreSQL + pgvector memory (optional; SQLite is used if DATABASE_URL is not set)
+psycopg2-binary==2.9.13
+pgvector==0.5.1
+# PyTorch is preinstalled in Colab and is used for the autoencoder there.
+# Without it the same autoencoder is trained with scikit-learn.

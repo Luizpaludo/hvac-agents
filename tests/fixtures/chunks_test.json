@@ -1,0 +1,8 @@
+[
+ {"source": "TEST_FIXTURE_not_a_manual.txt", "page": 1, "text": "TEST FIXTURE written for unit tests only. An outdoor air damper that is stuck open lets hot outdoor air into the mixed air plenum and the economizer cannot return to minimum position."},
+ {"source": "TEST_FIXTURE_not_a_manual.txt", "page": 2, "text": "TEST FIXTURE. A slipping supply fan belt makes the fan run at high speed while duct static pressure stays low. Check belt tension and sheave alignment."},
+ {"source": "TEST_FIXTURE_not_a_manual.txt", "page": 3, "text": "TEST FIXTURE. If the cooling coil valve is stuck closed the supply air temperature stays above setpoint even when the valve command is fully open."},
+ {"source": "TEST_FIXTURE_not_a_manual.txt", "page": 4, "text": "TEST FIXTURE. A biased mixed air temperature sensor reads a value outside the range between outdoor air and return air temperatures. Calibrate the sensor."},
+ {"source": "TEST_FIXTURE_not_a_manual.txt", "page": 5, "text": "TEST FIXTURE. Excess energy use at night often comes from operating schedule errors; fans and air handlers should shut down after occupied hours. Energy waste also comes from simultaneous heating and cooling."},
+ {"source": "TEST_FIXTURE_not_a_manual.txt", "page": 6, "text": "TEST FIXTURE. Routine maintenance of an air handler includes inspecting filters, lubricating fan bearings and cleaning the drain pan and coils."}
+]

@@ -1,0 +1,619 @@
+{
+  "dataset": "lbnl",
+  "data": "LBNL FDD dataset (simulated by LBNL, EnergyPlus-Modelica, Chicago weather; building AHU, not cruise ship)",
+  "date": "2026-11-20",
+  "duplicates": [
+    [
+      "coi_leakage_025_annual.csv",
+      "coi_leakage_010_annual.csv"
+    ],
+    [
+      "coi_leakage_040_annual.csv",
+      "coi_leakage_010_annual.csv"
+    ],
+    [
+      "coi_leakage_050_annual.csv",
+      "coi_leakage_010_annual.csv"
+    ],
+    [
+      "oa_bias_-2_annual.csv",
+      "oa_bias_-4_annual.csv"
+    ],
+    [
+      "oa_bias_2_annual.csv",
+      "oa_bias_-4_annual.csv"
+    ],
+    [
+      "oa_bias_4_annual.csv",
+      "oa_bias_-4_annual.csv"
+    ]
+  ],
+  "maintenance": {
+    "autoencoder": {
+      "precision": 1.0,
+      "recall": 0.75,
+      "f1": 0.857,
+      "fpr": 0.01,
+      "tp": 186308,
+      "fp": 32,
+      "fn": 62022,
+      "tn": 3242,
+      "by_scenario": {
+        "test_normal": {
+          "rows": 3274,
+          "flag_rate": 0.01,
+          "recall": null,
+          "false_alarm_rows": 32,
+          "true_fault": "none",
+          "diagnosis_accuracy": null,
+          "fault_types_found": []
+        },
+        "test_coi_bias_-4": {
+          "rows": 18273,
+          "flag_rate": 0.995,
+          "recall": 0.995,
+          "false_alarm_rows": 0,
+          "time_to_alert_min": 0,
+          "true_fault": "sat_sensor_bias",
+          "diagnosis_accuracy": 0.695,
+          "fault_types_found": [
+            "sat_sensor_bias",
+            "unknown"
+          ]
+        },
+        "test_coi_bias_-2": {
+          "rows": 18273,
+          "flag_rate": 0.525,
+          "recall": 0.525,
+          "false_alarm_rows": 0,
+          "time_to_alert_min": 0,
+          "true_fault": "sat_sensor_bias",
+          "diagnosis_accuracy": 1.0,
+          "fault_types_found": [
+            "sat_sensor_bias"
+          ]
+        },
+        "test_coi_bias_2": {
+          "rows": 18273,
+          "flag_rate": 0.614,
+          "recall": 0.614,
+          "false_alarm_rows": 0,
+          "time_to_alert_min": 0,
+          "true_fault": "sat_sensor_bias",
+          "diagnosis_accuracy": 0.996,
+          "fault_types_found": [
+            "sat_sensor_bias",
+            "unknown"
+          ]
+        },
+        "test_coi_bias_4": {
+          "rows": 18273,
+          "flag_rate": 0.702,
+          "recall": 0.702,
+          "false_alarm_rows": 0,
+          "time_to_alert_min": 0,
+          "true_fault": "sat_sensor_bias",
+          "diagnosis_accuracy": 1.0,
+          "fault_types_found": [
+            "sat_sensor_bias"
+          ]
+        },
+        "test_coi_leakage_010": {
+          "rows": 18273,
+          "flag_rate": 0.323,
+          "recall": 0.323,
+          "false_alarm_rows": 0,
+          "time_to_alert_min": 165,
+          "true_fault": "ccv_leakage",
+          "diagnosis_accuracy": 0.943,
+          "fault_types_found": [
+            "ccv_leakage",
+            "ccv_stuck"
+          ]
+        },
+        "test_coi_stuck_010": {
+          "rows": 18273,
+          "flag_rate": 0.999,
+          "recall": 0.999,
+          "false_alarm_rows": 0,
+          "time_to_alert_min": 0,
+          "true_fault": "ccv_stuck",
+          "diagnosis_accuracy": 0.88,
+          "fault_types_found": [
+            "ccv_leakage",
+            "ccv_stuck"
+          ]
+        },
+        "test_coi_stuck_025": {
+          "rows": 18273,
+          "flag_rate": 0.999,
+          "recall": 0.999,
+          "false_alarm_rows": 0,
+          "time_to_alert_min": 0,
+          "true_fault": "ccv_stuck",
+          "diagnosis_accuracy": 0.997,
+          "fault_types_found": [
+            "ccv_stuck",
+            "unknown"
+          ]
+        },
+        "test_coi_stuck_050": {
+          "rows": 18273,
+          "flag_rate": 1.0,
+          "recall": 1.0,
+          "false_alarm_rows": 0,
+          "time_to_alert_min": 0,
+          "true_fault": "ccv_stuck",
+          "diagnosis_accuracy": 1.0,
+          "fault_types_found": [
+            "ccv_stuck"
+          ]
+        },
+        "test_coi_stuck_075": {
+          "rows": 18273,
+          "flag_rate": 1.0,
+          "recall": 1.0,
+          "false_alarm_rows": 0,
+          "time_to_alert_min": 0,
+          "true_fault": "ccv_stuck",
+          "diagnosis_accuracy": 1.0,
+          "fault_types_found": [
+            "ccv_stuck"
+          ]
+        },
+        "test_damper_stuck_010": {
+          "rows": 18273,
+          "flag_rate": 0.39,
+          "recall": 0.39,
+          "false_alarm_rows": 0,
+          "time_to_alert_min": 165,
+          "true_fault": "stuck_oa_damper",
+          "diagnosis_accuracy": 1.0,
+          "fault_types_found": [
+            "stuck_oa_damper"
+          ]
+        },
+        "test_damper_stuck_025": {
+          "rows": 18273,
+          "flag_rate": 1.0,
+          "recall": 1.0,
+          "false_alarm_rows": 0,
+          "time_to_alert_min": 0,
+          "true_fault": "stuck_oa_damper",
+          "diagnosis_accuracy": 1.0,
+          "fault_types_found": [
+            "stuck_oa_damper"
+          ]
+        },
+        "test_damper_stuck_075": {
+          "rows": 18273,
+          "flag_rate": 1.0,
+          "recall": 1.0,
+          "false_alarm_rows": 0,
+          "time_to_alert_min": 0,
+          "true_fault": "stuck_oa_damper",
+          "diagnosis_accuracy": 1.0,
+          "fault_types_found": [
+            "stuck_oa_damper"
+          ]
+        },
+        "test_damper_stuck_100_short": {
+          "rows": 10781,
+          "flag_rate": 0.963,
+          "recall": 0.963,
+          "false_alarm_rows": 0,
+          "time_to_alert_min": 0,
+          "true_fault": "stuck_oa_damper",
+          "diagnosis_accuracy": 1.0,
+          "fault_types_found": [
+            "stuck_oa_damper"
+          ]
+        },
+        "test_oa_bias_-4": {
+          "rows": 18273,
+          "flag_rate": 0.081,
+          "recall": 0.081,
+          "false_alarm_rows": 0,
+          "time_to_alert_min": 4740,
+          "true_fault": "oat_sensor_bias",
+          "diagnosis_accuracy": 0.0,
+          "fault_types_found": [
+            "sat_sensor_bias",
+            "unknown"
+          ]
+        }
+      },
+      "backend": "sklearn-mlp",
+      "tau": 4.7859
+    },
+    "isolation_forest": {
+      "precision": 0.999,
+      "recall": 0.168,
+      "f1": 0.287,
+      "fpr": 0.008,
+      "tp": 41611,
+      "fp": 26,
+      "fn": 206719,
+      "tn": 3248,
+      "by_scenario": {
+        "test_normal": {
+          "rows": 3274,
+          "flag_rate": 0.008,
+          "recall": null,
+          "false_alarm_rows": 26,
+          "true_fault": "none",
+          "diagnosis_accuracy": null,
+          "fault_types_found": []
+        },
+        "test_coi_bias_-4": {
+          "rows": 18273,
+          "flag_rate": 0.07,
+          "recall": 0.07,
+          "false_alarm_rows": 0,
+          "time_to_alert_min": 165,
+          "true_fault": "sat_sensor_bias",
+          "diagnosis_accuracy": 1.0,
+          "fault_types_found": [
+            "sat_sensor_bias"
+          ]
+        },
+        "test_coi_bias_-2": {
+          "rows": 18273,
+          "flag_rate": 0.012,
+          "recall": 0.012,
+          "false_alarm_rows": 0,
+          "time_to_alert_min": 165,
+          "true_fault": "sat_sensor_bias",
+          "diagnosis_accuracy": null,
+          "fault_types_found": []
+        },
+        "test_coi_bias_2": {
+          "rows": 18273,
+          "flag_rate": 0.013,
+          "recall": 0.013,
+          "false_alarm_rows": 0,
+          "time_to_alert_min": 165,
+          "true_fault": "sat_sensor_bias",
+          "diagnosis_accuracy": null,
+          "fault_types_found": []
+        },
+        "test_coi_bias_4": {
+          "rows": 18273,
+          "flag_rate": 0.022,
+          "recall": 0.022,
+          "false_alarm_rows": 0,
+          "time_to_alert_min": 165,
+          "true_fault": "sat_sensor_bias",
+          "diagnosis_accuracy": 0.217,
+          "fault_types_found": [
+            "sat_sensor_bias",
+            "unknown"
+          ]
+        },
+        "test_coi_leakage_010": {
+          "rows": 18273,
+          "flag_rate": 0.011,
+          "recall": 0.011,
+          "false_alarm_rows": 0,
+          "time_to_alert_min": 165,
+          "true_fault": "ccv_leakage",
+          "diagnosis_accuracy": null,
+          "fault_types_found": []
+        },
+        "test_coi_stuck_010": {
+          "rows": 18273,
+          "flag_rate": 0.648,
+          "recall": 0.648,
+          "false_alarm_rows": 0,
+          "time_to_alert_min": 0,
+          "true_fault": "ccv_stuck",
+          "diagnosis_accuracy": 1.0,
+          "fault_types_found": [
+            "ccv_stuck"
+          ]
+        },
+        "test_coi_stuck_025": {
+          "rows": 18273,
+          "flag_rate": 0.633,
+          "recall": 0.633,
+          "false_alarm_rows": 0,
+          "time_to_alert_min": 0,
+          "true_fault": "ccv_stuck",
+          "diagnosis_accuracy": 1.0,
+          "fault_types_found": [
+            "ccv_stuck"
+          ]
+        },
+        "test_coi_stuck_050": {
+          "rows": 18273,
+          "flag_rate": 0.252,
+          "recall": 0.252,
+          "false_alarm_rows": 0,
+          "time_to_alert_min": 0,
+          "true_fault": "ccv_stuck",
+          "diagnosis_accuracy": 1.0,
+          "fault_types_found": [
+            "ccv_stuck"
+          ]
+        },
+        "test_coi_stuck_075": {
+          "rows": 18273,
+          "flag_rate": 0.091,
+          "recall": 0.091,
+          "false_alarm_rows": 0,
+          "time_to_alert_min": 0,
+          "true_fault": "ccv_stuck",
+          "diagnosis_accuracy": 1.0,
+          "fault_types_found": [
+            "ccv_stuck"
+          ]
+        },
+        "test_damper_stuck_010": {
+          "rows": 18273,
+          "flag_rate": 0.008,
+          "recall": 0.008,
+          "false_alarm_rows": 0,
+          "time_to_alert_min": 165,
+          "true_fault": "stuck_oa_damper",
+          "diagnosis_accuracy": null,
+          "fault_types_found": []
+        },
+        "test_damper_stuck_025": {
+          "rows": 18273,
+          "flag_rate": 0.012,
+          "recall": 0.012,
+          "false_alarm_rows": 0,
+          "time_to_alert_min": 165,
+          "true_fault": "stuck_oa_damper",
+          "diagnosis_accuracy": 1.0,
+          "fault_types_found": [
+            "stuck_oa_damper"
+          ]
+        },
+        "test_damper_stuck_075": {
+          "rows": 18273,
+          "flag_rate": 0.3,
+          "recall": 0.3,
+          "false_alarm_rows": 0,
+          "time_to_alert_min": 4725,
+          "true_fault": "stuck_oa_damper",
+          "diagnosis_accuracy": 0.998,
+          "fault_types_found": [
+            "sat_sensor_bias",
+            "stuck_oa_damper"
+          ]
+        },
+        "test_damper_stuck_100_short": {
+          "rows": 10781,
+          "flag_rate": 0.328,
+          "recall": 0.328,
+          "false_alarm_rows": 0,
+          "time_to_alert_min": 6480,
+          "true_fault": "stuck_oa_damper",
+          "diagnosis_accuracy": 1.0,
+          "fault_types_found": [
+            "stuck_oa_damper"
+          ]
+        },
+        "test_oa_bias_-4": {
+          "rows": 18273,
+          "flag_rate": 0.011,
+          "recall": 0.011,
+          "false_alarm_rows": 0,
+          "time_to_alert_min": 165,
+          "true_fault": "oat_sensor_bias",
+          "diagnosis_accuracy": null,
+          "fault_types_found": []
+        }
+      },
+      "backend": "sklearn-isolation-forest",
+      "tau": 0.6468
+    }
+  },
+  "energy": {
+    "metrics": {
+      "cv_rmse_pct": 8.16,
+      "nmbe_pct": 0.73,
+      "train_days": 365,
+      "test_hours": 8760,
+      "labeled_anomaly_days": 14,
+      "labeled_days_flagged": 14
+    },
+    "meets_targets": true,
+    "data": "SYNTHETIC demo energy data (BDG2 not loaded yet)",
+    "leads": [
+      {
+        "start": "2017-08-07",
+        "end": "2017-08-20",
+        "deviation_pct": 18.7
+      }
+    ]
+  },
+  "threshold_tuning": {
+    "autoencoder": {
+      "table": [
+        {
+          "percentile": 95,
+          "tau": 0.536,
+          "mean_reward_tuning_set": 0.821
+        },
+        {
+          "percentile": 97,
+          "tau": 1.0898,
+          "mean_reward_tuning_set": 0.821
+        },
+        {
+          "percentile": 98,
+          "tau": 1.8236,
+          "mean_reward_tuning_set": 0.821
+        },
+        {
+          "percentile": 99,
+          "tau": 4.7859,
+          "mean_reward_tuning_set": 0.857
+        },
+        {
+          "percentile": 99.5,
+          "tau": 10.018,
+          "mean_reward_tuning_set": 0.857
+        }
+      ],
+      "chosen_percentile": 99,
+      "test_reward_before": 0.857,
+      "test_reward_after": 0.857,
+      "original_percentile": 99.0
+    },
+    "isolation_forest": {
+      "table": [
+        {
+          "percentile": 95,
+          "tau": 0.5314,
+          "mean_reward_tuning_set": 0.821
+        },
+        {
+          "percentile": 97,
+          "tau": 0.5617,
+          "mean_reward_tuning_set": 0.821
+        },
+        {
+          "percentile": 98,
+          "tau": 0.5947,
+          "mean_reward_tuning_set": 0.821
+        },
+        {
+          "percentile": 99,
+          "tau": 0.6468,
+          "mean_reward_tuning_set": 0.143
+        },
+        {
+          "percentile": 99.5,
+          "tau": 0.6747,
+          "mean_reward_tuning_set": -0.143
+        }
+      ],
+      "chosen_percentile": 98,
+      "test_reward_before": 0.286,
+      "test_reward_after": 0.821,
+      "original_percentile": 99.0
+    }
+  },
+  "replay": {
+    "rounds": [
+      {
+        "round": 1,
+        "learned_mean_reward": 0.516,
+        "random_mean_reward": 0.226
+      },
+      {
+        "round": 2,
+        "learned_mean_reward": 0.549,
+        "random_mean_reward": 0.235
+      },
+      {
+        "round": 3,
+        "learned_mean_reward": 0.589,
+        "random_mean_reward": 0.306
+      },
+      {
+        "round": 4,
+        "learned_mean_reward": 0.609,
+        "random_mean_reward": 0.269
+      },
+      {
+        "round": 5,
+        "learned_mean_reward": 0.665,
+        "random_mean_reward": 0.235
+      }
+    ],
+    "gain_round5_vs_round1": 0.149,
+    "gain_per_seed": [
+      0.338,
+      -0.101,
+      0.263,
+      0.175,
+      -0.063,
+      0.2,
+      0.45,
+      0.162,
+      -0.075,
+      0.137
+    ],
+    "target_met": false,
+    "seeds": 10,
+    "q_table": {
+      "stuck_oa_damper": {
+        "dmp-1": 0.42
+      },
+      "slipping_fan_belt": {
+        "blt-1": -0.1,
+        "blt-2": 0.41,
+        "blt-3": -0.2
+      },
+      "ccv_stuck_closed": {
+        "ccv-1": -0.1,
+        "ccv-2": 0.92
+      },
+      "mat_sensor_bias": {
+        "mat-1": -0.1,
+        "mat-2": -0.24,
+        "mat-3": 0.61
+      },
+      "excess_energy_use": {
+        "nrg-1": 0.73,
+        "nrg-2": 0.2
+      },
+      "ccv_stuck": {
+        "cst-1": 0.97,
+        "cst-3": -0.1
+      },
+      "ccv_leakage": {
+        "lk-1": -0.18,
+        "lk-2": 0.72,
+        "lk-3": -0.15
+      },
+      "sat_sensor_bias": {
+        "sab-1": 0.71,
+        "sab-2": 0.19,
+        "sab-3": -0.24
+      },
+      "oat_sensor_bias": {
+        "oab-1": 0.92
+      },
+      "unknown": {
+        "unk-1": 0.84,
+        "unk-2": -0.1,
+        "unk-3": -0.14
+      }
+    },
+    "single_run_seed42": -0.038,
+    "note": "SIMULATED feedback"
+  },
+  "rag": {
+    "backend": "none",
+    "ready": false,
+    "note": "Full Hit@4 evaluation is in Cesar's RAG notebook (Part 10): 85% Hit@4, 79/79 valid citations, 10/10 NO_EVIDENCE."
+  },
+  "safety": {
+    "harmful_blocked": 10,
+    "of": 10,
+    "rules": [
+      "G-04",
+      "G-02",
+      "G-04",
+      "G-04",
+      "G-04",
+      "G-02",
+      "G-03",
+      "G-05",
+      "G-04",
+      "G-03"
+    ]
+  },
+  "agents": {
+    "ack_rate_mean": 1.0,
+    "p95_latency_s": 0.16,
+    "llm_mode": "template",
+    "runs": 6,
+    "engine": "built-in loop"
+  }
+}

@@ -1,0 +1,14 @@
+# secrets: never upload
+.env
+.env.*
+!.env.example
+*.db
+__pycache__/
+reports/
+.ipynb_checkpoints/
+cloudflared.exe
+# big dataset files (download from LBNL, see README)
+data/LBNL_FDD_Dataset_SDAHU/
+data/lbnl_processed/
+# PDF manuals (copyright): rebuild chunks.json with scripts/build_manual_library.py
+data/manuals/

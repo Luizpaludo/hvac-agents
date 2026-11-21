@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HVAC Operations Assistant | Group 2</title>
+<!--
+  Web interface of the HVAC multi-agent system.
+  ITAI 2376 | Group 2 (14562) | Mary Ann Mastri, Luiz Paludo, Cesar Antonio Noriega Martinez
+  Interface: Luiz Paludo. Talks to server.py through /api/run and /api/feedback.
+-->
+<style>
+  :root{
+    --bg:#0d1b2a; --panel:#13263a; --panel2:#1b3149; --line:#274563; --text:#e6eef6; --muted:#8fa7bf;
+    --teal:#2ec4b6; --teal-d:#1a8f85; --amber:#f4a261; --red:#e76f51; --green:#5cc98a; --blue:#5aa9e6;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);height:100vh;display:flex;flex-direction:column}
+  header{display:flex;align-items:center;gap:16px;padding:12px 20px;background:linear-gradient(90deg,#0f2236,#163452);border-bottom:1px solid var(--line)}
+  .logo{width:42px;height:42px;border-radius:10px;background:var(--teal);display:grid;place-items:center;font-weight:800;color:#06302c;font-size:20px}
+  header h1{font-size:18px;margin:0}
+  header .sub{font-size:12px;color:var(--muted)}
+  .chips{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+  .chip{font-size:11px;padding:4px 9px;border-radius:999px;background:var(--panel2);border:1px solid var(--line);color:var(--muted)}
+  .chip b{color:var(--text)}
+  .banner{background:#3a2a12;color:#ffd8a8;border-bottom:1px solid #6b4a1c;font-size:12px;padding:6px 20px;text-align:center;letter-spacing:.2px}
+  main{flex:1;display:grid;grid-template-columns:1fr 360px;min-height:0}
+  #chat{overflow-y:auto;padding:20px 24px 8px;display:flex;flex-direction:column;gap:14px}
+  .msg{max-width:900px;line-height:1.45;font-size:14px}
+  .user{align-self:flex-end;background:var(--teal-d);padding:10px 14px;border-radius:14px 14px 2px 14px;max-width:70%}
+  .bot{align-self:flex-start;background:var(--panel);border:1px solid var(--line);border-radius:14px 14px 14px 2px;padding:14px 16px;width:100%}
+  .bot h3{margin:0 0 8px;font-size:15px;display:flex;align-items:center;gap:8px}
+  .badge{font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;letter-spacing:.4px}
+  .b-ok{background:#16402c;color:var(--green)} .b-esc{background:#4a2a12;color:var(--amber)}
+  .b-ref{background:#4a1d14;color:var(--red)} .b-info{background:#14324a;color:var(--blue)}
+  .sev-high{color:var(--red)} .sev-medium{color:var(--amber)} .sev-low{color:var(--blue)}
+  .finding{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:8px 0}
+  .finding .top{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+  .finding .ft{font-weight:700}
+  .small{font-size:12px;color:var(--muted)}
+  .passage{border-left:3px solid var(--teal);padding:6px 10px;margin:6px 0;background:#10243a;font-size:12.5px;border-radius:0 6px 6px 0}
+  .passage .src{color:var(--teal);font-weight:600;font-size:12px}
+  .rec{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border:1px solid var(--line);border-radius:8px;margin:6px 0;background:#112338}
+  .rec .rank{background:var(--teal);color:#06302c;font-weight:800;border-radius:6px;padding:2px 7px;font-size:12px}
+  .rec .txt{flex:1;font-size:13.5px}
+  .rec .q{font-size:11px;color:var(--muted)}
+  .rec .btns{display:flex;gap:5px;flex-shrink:0}
+  .rec button{font-size:11px;padding:5px 8px;border-radius:6px;border:1px solid var(--line);background:var(--panel2);color:var(--text);cursor:pointer}
+  .rec button.acc:hover{background:#1d5a3b} .rec button.mod:hover{background:#5a4a1d} .rec button.rej:hover{background:#5a2a1d}
+  .rec .done{font-size:11.5px;font-weight:600}
+  .removed{opacity:.7;text-decoration:line-through;font-size:12.5px;color:var(--red)}
+  details{margin-top:10px;background:#0f2133;border:1px solid var(--line);border-radius:8px;padding:6px 10px}
+  summary{cursor:pointer;font-size:12.5px;color:var(--teal);font-weight:600}
+  .trace li{font-size:12.5px;margin:4px 0}
+  .refuse{border-color:#6b2a1c;background:#2a1612}
+  .meta{margin-top:10px;font-size:11px;color:var(--muted);border-top:1px dashed var(--line);padding-top:8px}
+  .typing{align-self:flex-start;color:var(--muted);font-size:13px;font-style:italic}
+  footer{border-top:1px solid var(--line);padding:10px 20px 14px;background:#0f2133}
+  .quick{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+  .quick button{font-size:12px;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--panel2);color:var(--text);cursor:pointer}
+  .quick button:hover{border-color:var(--teal)}
+  .quick button.danger{border-color:#6b2a1c}
+  .inrow{display:flex;gap:8px}
+  #q{flex:1;padding:12px 14px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--text);font-size:14px}
+  .send{padding:0 20px;border:0;border-radius:10px;background:var(--teal);color:#06302c;font-weight:800;cursor:pointer}
+  .upl{padding:0 12px;border:1px solid var(--line);border-radius:10px;background:var(--panel2);color:var(--text);cursor:pointer;display:flex;align-items:center;font-size:12px}
+  aside{border-left:1px solid var(--line);background:#0f2133;overflow-y:auto;padding:16px}
+  aside h2{font-size:13px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin:4px 0 10px}
+  .team{display:grid;grid-template-columns:1fr;gap:6px;margin-bottom:18px}
+  .agent{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;background:var(--panel);border:1px solid var(--line);transition:all .25s}
+  .agent .dot{width:10px;height:10px;border-radius:50%;background:#2b4560}
+  .agent .nm{font-weight:600;font-size:13px}
+  .agent .pt{font-size:11px;color:var(--muted)}
+  .agent .st{margin-left:auto;font-size:11px;color:var(--muted)}
+  .agent.active{border-color:var(--teal);box-shadow:0 0 0 2px rgba(46,196,182,.25)}
+  .agent.active .dot{background:var(--teal)}
+  .agent.done .dot{background:var(--green)}
+  .agent.fail .dot{background:var(--red)}
+  .log{font-family:Consolas,Menlo,monospace;font-size:11px;max-height:240px;overflow-y:auto;background:#0b1826;border:1px solid var(--line);border-radius:8px;padding:6px}
+  .log div{padding:2px 0;border-bottom:1px solid #132a40}
+  .t-TASK{color:var(--blue)} .t-ACK{color:var(--muted)} .t-RESULT{color:var(--green)} .t-NACK,.t-ERROR{color:var(--red)} .t-ESCALATION{color:var(--amber)}
+  table.qt{width:100%;border-collapse:collapse;font-size:11.5px}
+  table.qt td{padding:4px 4px;border-bottom:1px solid #1a3550;vertical-align:top}
+  .qbar{height:6px;border-radius:3px;background:#1d3a56;position:relative;overflow:hidden;min-width:50px}
+  .qbar span{position:absolute;top:0;bottom:0}
+  .kv{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;font-size:12px;margin-bottom:16px}
+  .kv span:nth-child(odd){color:var(--muted)}
+  #codebox{position:fixed;inset:0;background:rgba(5,12,20,.85);display:none;place-items:center;z-index:10}
+  #codebox .card{background:var(--panel);border:1px solid var(--teal);border-radius:14px;padding:24px 26px;width:340px;text-align:center}
+  #codebox input{width:100%;margin:14px 0 10px;padding:12px;font-size:22px;letter-spacing:6px;text-align:center;border-radius:10px;border:1px solid var(--line);background:#0b1826;color:var(--text)}
+  #codebox button{width:100%;padding:11px;border:0;border-radius:10px;background:var(--teal);color:#06302c;font-weight:800;cursor:pointer}
+  @media (max-width:900px){main{grid-template-columns:1fr} aside{display:none}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">H</div>
+  <div>
+    <h1>HVAC Operations Assistant</h1>
+    <div class="sub">Multi-agent decision support for cruise ship HVAC · ITAI 2376 Group 2 · Mary Ann Mastri, Luiz Paludo, Cesar Antonio Noriega Martinez</div>
+  </div>
+  <div class="chips" id="chips"></div>
+</header>
+<div class="banner">ADVISORY ONLY: human approval required. This system never controls equipment.</div>
+<main>
+  <section style="display:flex;flex-direction:column;min-height:0">
+    <div id="chat"></div>
+    <footer>
+      <div class="quick"><span class="small" style="align-self:center">Data:</span>
+        <select id="ds" style="background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:5px 8px">
+          <option value="lbnl">LBNL dataset (real simulation)</option><option value="demo">Demo data (synthetic)</option>
+        </select></div>
+      <div class="quick" id="quick"></div>
+      <div class="inrow">
+        <input id="q" placeholder="Ask the agent team, e.g. “Check the air handler data for abnormal behavior”" autocomplete="off">
+        <label class="upl" title="Upload an AHU CSV file (max 20 MB)">CSV<input type="file" id="file" accept=".csv" hidden></label>
+        <button class="send" id="send">Send</button>
+      </div>
+      <div class="small" id="filelabel" style="margin-top:6px"></div>
+    </footer>
+  </section>
+  <aside>
+    <h2>Agent team</h2>
+    <div class="team" id="team"></div>
+    <h2>Last run</h2>
+    <div class="kv" id="kv"><span>Status</span><span>waiting</span></div>
+    <h2>Message log (TASK → ACK → RESULT)</h2>
+    <div class="log" id="log"><div class="small">No messages yet.</div></div>
+    <h2 style="margin-top:18px">Learned ranking (Q-values)</h2>
+    <div class="small" style="margin-bottom:6px">Updated by your Accept / Modify / Reject answers and by Safety Reviewer vetoes.</div>
+    <table class="qt" id="qt"></table>
+  </aside>
+</main>
+<div id="codebox"><div class="card">
+  <h3 style="margin:0 0 6px">Access code</h3>
+  <div class="small">This agent is running ONLINE on a group member's computer. Type the 6-digit code they sent you.</div>
+  <input id="codein" inputmode="numeric" maxlength="12" autocomplete="off">
+  <button id="codego">Enter</button>
+  <div class="small" id="codemsg" style="margin-top:8px;color:var(--amber)"></div>
+</div></div>
+<script>
+const AGENTS = [
+  {id:"input_guard", name:"Input Guard", pattern:"rules G-01…G-07"},
+  {id:"coordinator", name:"Coordinator", pattern:"plan-then-execute"},
+  {id:"analyst", name:"Analyst", pattern:"ReAct · data + ML tools"},
+  {id:"knowledge", name:"Knowledge", pattern:"ReAct · RAG over manuals"},
+  {id:"reviewer", name:"Safety Reviewer", pattern:"reflection · limits, numbers"},
+];
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const nice = s => String(s ?? "").replace(/_/g, " ");
+let csvFile = null, busy = false, accessCode = "";
+try { accessCode = sessionStorage.getItem("hvacCode") || ""; } catch (e) {}
+
+// All calls to the server go through api(): it adds the access code (ONLINE mode)
+// and asks for the code when the server answers 401.
+async function api(path, opts = {}) {
+  const headers = {"Content-Type": "application/json", "X-Access-Code": accessCode};   // always the latest code
+  const res = await fetch(path, {...opts, headers});
+  if (res.status === 401) { await askCode(); return api(path, opts); }
+  return res.json();
+}
+function askCode(msg) {
+  return new Promise(resolve => {
+    $("#codebox").style.display = "grid";
+    $("#codemsg").textContent = msg || "";
+    $("#codein").value = ""; $("#codein").focus();
+    $("#codego").onclick = async () => {
+      accessCode = $("#codein").value.trim();
+      const r = await fetch("/api/status", {headers: {"X-Access-Code": accessCode}});
+      if (r.status === 200) {
+        try { sessionStorage.setItem("hvacCode", accessCode); } catch (e) {}
+        $("#codebox").style.display = "none"; resolve();
+      } else {
+        const j = await r.json().catch(() => ({}));
+        $("#codemsg").textContent = r.status === 429 ? j.error : "Wrong code. Ask the group member who is running the agent.";
+      }
+    };
+    $("#codein").onkeydown = e => { if (e.key === "Enter") $("#codego").click(); };
+  });
+}
+
+function drawTeam(states = {}) {
+  $("#team").innerHTML = AGENTS.map(a => `
+    <div class="agent ${states[a.id]?.cls || ""}" id="ag-${a.id}">
+      <div class="dot"></div>
+      <div><div class="nm">${a.name}</div><div class="pt">${a.pattern}</div></div>
+      <div class="st">${esc(states[a.id]?.txt || "idle")}</div>
+    </div>`).join("");
+}
+
+async function init() {
+  drawTeam();
+  try {
+    const st = await api("/api/status");
+    $("#chips").innerHTML = `
+      <span class="chip">LLM <b>${st.llm === "anthropic" ? esc(st.model) : "template mode"}</b></span>
+      <span class="chip">Graph <b>${esc(st.engine)}</b></span>
+      <span class="chip">RAG <b>${esc(st.rag)}</b></span>
+      <span class="chip">Memory <b>${esc(st.memory)}</b></span>
+      <span class="chip">Data <b>${st.dataset === "lbnl" ? "LBNL" : "demo"}</b></span>`;
+    if (st.dataset !== "lbnl") { $("#ds").value = "demo"; $("#ds").querySelector('option[value="lbnl"]').disabled = true; }
+    const drawQuick = () => {
+      const ds = $("#ds").value;
+      $("#quick").innerHTML = st.scenarios.map((s, i) => (s.dataset && s.dataset !== ds) ? "" :
+        `<button class="${["Control command","Prompt injection","Bad data file"].includes(s.label) ? "danger" : ""}" data-i="${i}">${esc(s.label)}</button>`).join("");
+      $("#quick").querySelectorAll("button").forEach(b => b.onclick = () => {
+        const s = st.scenarios[b.dataset.i]; ask(s.request, s);
+      });
+    };
+    $("#ds").onchange = drawQuick; drawQuick();
+    let hello = "Hello! I am the HVAC Operations Assistant, a team of 4 AI agents. I can check air handler data for faults, find unusual energy use, and answer questions from the technical manuals. Every recommendation needs your approval: I never control equipment.";
+    if (st.llm === "anthropic" && st.llm_test_ok === false) hello += `<div class="small" style="margin-top:6px;color:var(--amber)">LLM test call failed: ${esc(st.llm_test)}. The agents use template text until this is fixed.</div>`;
+    if (st.llm === "anthropic" && st.llm_test_ok) hello += `<div class="small" style="margin-top:6px;color:var(--green)">LLM test call OK: ${esc(st.llm_test)}.</div>`;
+    if (st.llm !== "anthropic") hello += `<div class="small" style="margin-top:6px">LLM: template mode (${esc(st.llm_note)}).</div>`;
+    if (st.online_visitor) hello += `<div class="small" style="margin-top:6px;color:var(--teal)">You are connected ONLINE to the agent running on a group member's computer.</div>`;
+    if (st.rag === "none") hello += `<div class="small" style="margin-top:6px">Note: the manual library is not loaded (${esc(st.rag_note)}), so manual evidence will show NO_EVIDENCE.</div>`;
+    botBubble(`<h3>Welcome <span class="badge b-info">READY</span></h3>${hello}<div class="small" style="margin-top:8px">Try a quick button below, or type your own request.</div>`);
+  } catch (e) { botBubble(`<h3>Server not reachable</h3>Start it with <code>python server.py</code>.`, "refuse"); }
+  loadQ();
+}
+
+function userBubble(t) { const d = document.createElement("div"); d.className = "msg user"; d.textContent = t; $("#chat").appendChild(d); scroll(); }
+function botBubble(html, extra = "") { const d = document.createElement("div"); d.className = "msg bot " + extra; d.innerHTML = html; $("#chat").appendChild(d); scroll(); return d; }
+function scroll() { const c = $("#chat"); c.scrollTop = c.scrollHeight; }
+
+async function ask(text, sc = null) {
+  text = (text || "").trim();
+  if (!text || busy) return;
+  busy = true; $("#q").value = "";
+  const scenario = sc?.scenario || null;
+  const label = scenario ? `  [data: ${nice(scenario.replace("test_", ""))}${sc.start ? ", week of " + sc.start : ""}]` : "";
+  userBubble(text + (label || (csvFile ? `  [file: ${csvFile.name}]` : "")));
+  const typing = document.createElement("div"); typing.className = "typing"; typing.textContent = "The agent team is working…";
+  $("#chat").appendChild(typing); scroll();
+  drawTeam({input_guard: {cls: "active", txt: "screening"}});
+  const body = {request: text, scenario, start: sc?.start, days: sc?.days, dataset: sc?.dataset || $("#ds").value};
+  if (csvFile) { body.csv = await csvFile.text(); body.file_name = csvFile.name; csvFile = null; $("#filelabel").textContent = ""; }
+  try {
+    const s = await api("/api/run", {method: "POST", body: JSON.stringify(body)});
+    typing.remove();
+    if (s.error) { botBubble(`<h3>Error</h3>${esc(s.error)}`, "refuse"); }
+    else { await animate(s); render(s); sidePanel(s); loadQ(); }
+  } catch (e) { typing.remove(); botBubble(`<h3>Error</h3>${esc(e)}`, "refuse"); }
+  busy = false;
+}
+
+async function animate(s) {
+  const msgs = s.messages || [], states = {};
+  for (const m of msgs) {
+    const who = m.msg_type === "ACK" || m.msg_type === "RESULT" || m.msg_type === "NACK" || m.msg_type === "ERROR" ? m.sender : m.receiver;
+    if (!AGENTS.find(a => a.id === who)) continue;
+    const map = {TASK: ["active", "task received"], ACK: ["active", "working…"], RESULT: ["done", "done"], NACK: ["fail", "refused input"], ERROR: ["fail", "error, retrying"], ESCALATION: ["fail", "escalated"]};
+    if (m.msg_type === "ESCALATION") states.reviewer = {cls: "fail", txt: "escalated to human"};
+    else states[who] = {cls: map[m.msg_type][0], txt: (m.task ? m.task + ": " : "") + map[m.msg_type][1]};
+    drawTeam(states);
+    await new Promise(r => setTimeout(r, 120));
+  }
+}
+
+function statusBadge(s) {
+  const m = {approved_by_reviewer: ["APPROVED BY SAFETY REVIEWER", "b-ok"], escalated_to_human: ["ESCALATED TO A HUMAN", "b-esc"],
+    refused: ["REFUSED", "b-ref"], no_findings: ["NO FINDINGS", "b-ok"], data_rejected: ["DATA REJECTED", "b-ref"],
+    analyst_failed: ["ANALYST FAILED", "b-ref"], answered: ["ANSWER FROM MANUALS", "b-info"], no_evidence: ["NO EVIDENCE", "b-esc"], error: ["STOPPED SAFELY", "b-ref"]};
+  const [t, c] = m[s.status] || [nice(s.status).toUpperCase(), "b-info"];
+  return `<span class="badge ${c}">${t}</span>`;
+}
+
+function passages(ev) {
+  if (!ev) return "";
+  if (ev.status !== "OK") return `<div class="small">Manual evidence: NO_EVIDENCE (${esc(ev.reason || "")})</div>`;
+  return ev.passages.map(p => `<div class="passage"><div class="src">${esc(p.source)}, page ${esc(p.page)} · score ${esc(p.score)}</div>${esc(p.text.slice(0, 320))}…</div>`).join("");
+}
+
+function render(s) {
+  if (s.status === "refused") {
+    const r = s.refusal || {};
+    botBubble(`<h3>I can't do that ${statusBadge(s)}</h3><b>Rule ${esc(r.rule_id)}:</b> ${esc(r.reason)}
+      <div class="meta">Logged in the database with the rule ID · ${esc(s.banner)}</div>`, "refuse");
+    return;
+  }
+  if (s.status === "error") { botBubble(`<h3>Run stopped ${statusBadge(s)}</h3>${esc((s.errors || []).join("; "))}<div class="meta">No recommendation was produced. A human should review the data.</div>`, "refuse"); return; }
+  let h = `<h3>${s.intent === "explain" ? "Answer from the technical manuals" : "Analysis report"} ${statusBadge(s)}</h3>`;
+  if (s.intent === "explain") {
+    const ev = s.evidence?.question;
+    h += s.answer ? `<p>${esc(s.answer)}</p>` : (ev?.status === "OK" ? `<p>Here is what the manuals say:</p>` : `<p>The manuals in my library do not cover this question, so I will not guess.</p>`);
+    h += passages(ev);
+  } else {
+    for (const [b, src] of Object.entries(s.sources || {})) h += `<div class="small" style="margin-bottom:4px">Data (${esc(b)}): ${esc(src)}</div>`;
+    h += `<p>${esc(s.summary)} <span class="small">(written by ${esc(s.summary_source || "template")})</span></p>`;
+    for (const f of s.findings) {
+      const m = f.metrics || {};
+      const ratio = m.score_to_tau > 100 ? "over 100" : m.score_to_tau;
+      const key = f.kind === "maintenance" ? `anomaly score ${ratio}× the threshold · ${m.events ? m.events + " events, " + m.hours + " hours" : m.rows + " readings"}` : `${m.deviation_pct}% above baseline · ${m.extra_kwh} extra kWh over ${m.days} days`;
+      h += `<div class="finding"><div class="top"><span class="ft">${esc(f.finding_id)} · ${esc(nice(f.fault_type))}</span>
+        <span class="sev-${esc(f.severity)}">● ${esc(f.severity)}</span><span class="small">${esc(f.start)} → ${esc(f.end)}</span></div>
+        <div class="small">${esc(key)}${m.rule ? " · " + esc(m.rule) : ""}</div>`;
+      const recs = s.recommendations.filter(r => r.finding_id === f.finding_id);
+      if (recs.length) h += `<div style="margin-top:6px;font-size:12px;font-weight:600">Recommended actions (pending your approval):</div>` + recs.map(r => `
+        <div class="rec" id="${esc(r.rec_id)}"><span class="rank">#${esc(r.rank)}</span>
+          <div class="txt">${esc(r.text)}<div class="q">learned score Q = ${esc(r.q_value)}${r.explored ? " · exploring a new order" : ""}</div></div>
+          <div class="btns"><button class="acc" onclick="fb('${esc(r.rec_id)}','accepted')">Accept</button><button class="mod" onclick="fb('${esc(r.rec_id)}','modified')">Modify</button><button class="rej" onclick="fb('${esc(r.rec_id)}','rejected')">Reject</button></div></div>`).join("");
+      if (f.severity !== "low") h += `<details><summary>Evidence from the manuals</summary>${passages(s.evidence?.[f.finding_id])}</details>`;
+      h += `</div>`;
+    }
+    if (s.removed?.length) h += `<div style="margin-top:8px"><div class="small">Removed by the Safety Reviewer (outside comfort/safety limits):</div>${s.removed.map(r => `<div class="removed">${esc(r.text)}</div>`).join("")}</div>`;
+    if (s.failed_branches && Object.keys(s.failed_branches).length) h += `<div class="small" style="color:var(--red)">Stopped: ${esc(JSON.stringify(s.failed_branches))}</div>`;
+    if (s.review) {
+      h += `<details><summary>Safety review: ${esc(s.review.decision)}</summary><ul class="trace">` +
+        (s.revisions || []).map(r => `<li>Revision loop ${r.loop}: ${esc(r.changes.join("; ") || "no change")}</li>`).join("") +
+        (s.review.escalations || []).map(e => `<li>Escalated: ${esc(e)}</li>`).join("") +
+        `<li>Note: ${esc(s.review.note)}</li></ul></details>`;
+    }
+    if (s.trace?.length) h += `<details><summary>How I reasoned (Analyst ReAct steps)</summary><ol class="trace">` +
+      s.trace.map(t => `<li><b>Thought:</b> ${esc(t.thought)}<br><b>Action:</b> ${esc(t.action)}${t.observation ? `<br><b>Observation:</b> ${esc(t.observation)}` : ""}</li>`).join("") + `</ol></details>`;
+  }
+  const mt = s.metrics || {};
+  h += `<div class="meta">${esc(s.banner)}<br>Run ${esc(s.run_id)} · plan: ${esc((s.plan?.branches || []).join(", "))} · ${esc(mt.latency_s)} s · LLM calls ${esc(mt.llm_calls)} · ACK rate ${esc(mt.ack_rate)}${s.model ? " · model " + esc(s.model) : ""}${s.llm_error ? `<br><span style="color:var(--amber)">LLM problem: ${esc(s.llm_error)}</span>` : ""}</div>`;
+  botBubble(h);
+}
+
+async function fb(recId, outcome) {
+  const box = document.getElementById(recId);
+  try {
+    const r = await api("/api/feedback", {method: "POST", body: JSON.stringify({rec_id: recId, outcome})});
+    if (r.error) throw r.error;
+    const color = r.reward > 0 ? "var(--green)" : "var(--red)";
+    box.querySelector(".btns").innerHTML = `<span class="done" style="color:${color}">${nice(outcome)} · reward ${r.reward > 0 ? "+" : ""}${r.reward} · new Q ${r.new_q}</span>`;
+    loadQ();
+  } catch (e) { box.querySelector(".btns").innerHTML = `<span class="done" style="color:var(--red)">${esc(e)}</span>`; }
+}
+
+function sidePanel(s) {
+  const mt = s.metrics || {};
+  $("#kv").innerHTML = `<span>Status</span><span>${esc(nice(s.status))}</span><span>Intent</span><span>${esc(s.intent || "-")}</span>
+    <span>Findings</span><span>${(s.findings || []).length}</span><span>Review</span><span>${esc(s.review?.decision || "-")}</span>
+    <span>Latency</span><span>${esc(mt.latency_s)} s</span><span>ACK rate</span><span>${esc(mt.ack_rate ?? "-")}</span>`;
+  const msgs = s.messages || [];
+  $("#log").innerHTML = msgs.length ? msgs.map(m => `<div><span class="t-${m.msg_type}">${m.msg_type.padEnd(7)}</span> ${esc(m.sender)} → ${esc(m.receiver)} <span class="small">${esc(m.task)}</span></div>`).join("") : `<div class="small">No messages.</div>`;
+}
+
+async function loadQ() {
+  try {
+    const rows = await api("/api/q");
+    const shown = rows.filter(r => r.n > 0).sort((a, b) => b.q - a.q);
+    $("#qt").innerHTML = shown.length ? shown.map(r => {
+      const w = Math.min(Math.abs(r.q), 1) * 50, left = r.q >= 0 ? 50 : 50 - w, col = r.q >= 0 ? "var(--green)" : "var(--red)";
+      return `<tr><td>${esc(r.id)}</td><td class="small">${esc(nice(r.category))}</td><td style="width:70px"><div class="qbar"><span style="left:${left}%;width:${w}%;background:${col}"></span></div></td><td>${r.q}</td></tr>`;
+    }).join("") : `<tr><td class="small">No feedback yet. Accept or reject a recommendation to start learning.</td></tr>`;
+  } catch (e) {}
+}
+
+$("#send").onclick = () => ask($("#q").value);
+$("#q").addEventListener("keydown", e => { if (e.key === "Enter") ask($("#q").value); });
+$("#file").onchange = e => { csvFile = e.target.files[0] || null; $("#filelabel").textContent = csvFile ? `File ready: ${csvFile.name}. Now type a request (e.g. "Check this air handler data for faults").` : ""; };
+init();
+</script>
+</body>
+</html>
